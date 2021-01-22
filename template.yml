@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  API revendedor.
+
+Globals:
+  Function:
+    Timeout: 120
+    Environment:
+      Variables:
+        STACK: !Ref StackPrefix
+
+Parameters:
+  ########################################################################
+  #                STAGE PARAMETERS                                      #
+  ########################################################################
+
+  ApiStageName:
+    Type: String
+    Default: dev
+
+  StackPrefix:
+    Type: String
+    Default: stack-revendedor
+
+#  CognitoUserPoolArnSsm:
+#    Type: 'AWS::SSM::Parameter::Value<String>'
+#    Default: /dev/aws/sam/BACKOFFICE/cognito_user_pool_arn
+
+Resources:
+  ########################################################################
+  #                API RELATED RESOURCES                                 #
+  ########################################################################
+#  StackRelatorioApi:
+#    Type: AWS::Serverless::Api
+#    Properties:
+#      Name: !Join ["-", ["api", !Ref StackPrefix, !Ref ApiStageName]]
+#      StageName: !Ref ApiStageName
+#      Cors: "'*'"
+#      DefinitionBody:
+#        'Fn::Transform':
+#          Name: 'AWS::Include'
+#          Parameters:
+#            Location: api.yaml
+#      Auth:
+#        Authorizers:
+#          Authorizer:
+#            UserPoolArn: !Ref CognitoUserPoolArnSsm
+
+  ########################################################################
+  #                LAMBDA RELATED RESOURCES                              #
+  ########################################################################
+
+  GetRevendedor:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: code/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      FunctionName: !Join ["-", [!Ref StackPrefix, "get-revendedor"]]
+      Events:
+        GetLeadsEvent:
+          Type: Api
+          Properties:
+#            RestApiId: !Ref StackRelatorioApi
+            Path: /revendedor
+            Method: get
+      Policies:
+        - AmazonSSMReadOnlyAccess
