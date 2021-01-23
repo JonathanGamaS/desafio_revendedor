@@ -1,0 +1,33 @@
+version: 0.2
+
+# run-as: sudo
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.7
+  pre_build:
+    commands:
+      - echo Configurando ambiente python3
+      - apt-get update
+      - apt-get install --yes python3.6
+      - apt-get install --yes python3-pip
+      - python3.6 -m pip install virtualenv
+      - virtualenv env
+      - . env/bin/activate
+      - python -V
+      - echo Ambiente configurado com sucesso! `pwd` `date`
+      - pip install -r requirements.txt
+      - for dir in code/*; do echo "$dir"; if [ -f "$dir"/requirements.txt ]; then (pip install -t "$dir"/ -r "$dir"/requirements.txt); fi; done
+      - echo Dependencias instaladas! `pwd` `date`
+  build:
+    commands:
+      - echo Iniciando build. `date`
+      - sam package --template-file template.yaml --s3-bucket epeca-artifacts --output-template-file packaged.yaml
+  post_build:
+    commands:
+      - echo Build executado com sucesso em `date`!
+artifacts:
+  files:
+    - packaged.yaml
+  discard-paths: yes
