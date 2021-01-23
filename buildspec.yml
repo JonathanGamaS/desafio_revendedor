@@ -10,9 +10,9 @@ phases:
     commands:
       - echo Configurando ambiente python3
       - apt-get update
-      - apt-get install --yes python3.6
+      - apt-get install --yes python3.9
       - apt-get install --yes python3-pip
-      - python3.6 -m pip install virtualenv
+      - python3.9 -m pip install virtualenv
       - virtualenv env
       - . env/bin/activate
       - python -V
