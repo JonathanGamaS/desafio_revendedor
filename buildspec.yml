@@ -11,7 +11,7 @@ phases:
       - echo Configurando ambiente python3
       - apt-get update
       - apt-get install --yes python3.6
-      - sudo apt-get install python3-pip
+      - apt-get install --yes python3-pip
       - python3.6 -m pip install virtualenv
       - virtualenv env
       - . env/bin/activate
